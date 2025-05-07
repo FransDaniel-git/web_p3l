@@ -7,17 +7,24 @@ import UpdateUserPage from "../pages/updateUserPage";
 import DeleteUserPage from "../pages/deleteUserPage";
 import InformasiUmum from "../pages/informasiUmum";
 import ManagePegawai from "../pages/managePegawai";
+import BarangPage from "../pages/barangPage";
+import DetailBarangPage from "../pages/detailBarangPage";
 import "./index.css";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ManagePegawai />,
+    element: <BarangPage />,
+    //path: "/",
+    //element: <InformasiUmum />,
+    //path: "/",
+    //element: <ManagePegawai />,
   },
   {
-    path: "/2",
-    element: <LoginPage />,
+    path: "/barang/:kode_barang",
+    element: <DetailBarangPage />,
   },
+  {},
   {
     element: <MainLayout />,
     children: [
