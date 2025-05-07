@@ -25,7 +25,6 @@ import { FaShieldAlt } from "react-icons/fa";
 const BarangPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
-  const [userPhoto, setUserPhoto] = useState("");
 
   const [search, setSearch] = useState("");
   const [hargaMin, setHargaMin] = useState("");
@@ -52,9 +51,6 @@ const BarangPage = () => {
     if (token) {
       setIsLoggedIn(true);
       setUserName(sessionStorage.getItem("userName") || "User");
-      setUserPhoto(
-        sessionStorage.getItem("userPhoto") || "https://via.placeholder.com/40"
-      );
     }
   }, []);
 
@@ -281,7 +277,7 @@ const BarangPage = () => {
                   Keranjang
                 </Button>
                 <Image
-                  src={userPhoto}
+                  src="https://via.placeholder.com/40"
                   roundedCircle
                   width={40}
                   height={40}
