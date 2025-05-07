@@ -71,7 +71,6 @@ const DetailBarang = () => {
     <>
       <style>
         {`
-          /* Full screen styling */
           .detail-page-container {
             min-height: 100vh;
             width: 100%;
@@ -92,7 +91,6 @@ const DetailBarang = () => {
             padding: 20px;
           }
 
-          /* Floating back button */
           .floating-back-btn {
             position: fixed;
             top: 20px;
@@ -110,7 +108,6 @@ const DetailBarang = () => {
             transform: translateY(-2px);
           }
           
-          /* Produk visual container - wraps all visual elements */
           .product-visual-container {
             background-color: #fff;
             border-radius: 8px 8px 0 0;
@@ -215,7 +212,6 @@ const DetailBarang = () => {
             font-weight: 600;
           }
           
-          /* Menghubungkan detail section dengan product carousel */
           .detail-section {
             background: #fff;
             border-radius: 0 0 8px 8px;
@@ -284,7 +280,6 @@ const DetailBarang = () => {
             border-radius: 8px;
           }
           
-          /* Content container untuk menyelaraskan konten */
           .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -335,7 +330,6 @@ const DetailBarang = () => {
           <Card className="product-card border-0">
             <Row className="g-0">
               <Col xs={12}>
-                {/* Wrapper untuk visual elements */}
                 <div className="product-visual-container">
                   <Carousel
                     activeIndex={activeIndex}
