@@ -1,24 +1,25 @@
-import useAxios from "./index";
+import useAxios from "./baseApi";
 
-const fetchPermohonans = async () => {
+const fetchPermohonan = async () => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      console.error("No token found");
-      return;
-    }
+    // const token = sessionStorage.getItem("token");
+    // if (!token) {
+    //   console.error("No token found");
+    //   return;
+    // }
 
-    const response = await useAxios.get("/permohonan", {
+    const response = await useAxios.get("/permohonans", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
     });
 
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    throw error;
   }
 };
 
-export { fetchPermohonans };
+export { fetchPermohonan };

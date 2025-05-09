@@ -1,29 +1,28 @@
+import { toast } from "react-toastify";
 import useAxios from "./baseApi";
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-const login = async (data) => {
+const SignUp = async (data) => {
   try {
-    const response = await useAxios.post("/login", data);
+    const response = await useAxios.post("user/register", data);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Terjadi kesalahan." };
+    toast.error(error?.response?.data?.message || "Register gagal");
+    throw error.response?.data || error;
   }
 };
 
-const logout = async () => {
+const SignIn = async (data) => {
   try {
-    const response = await useAxios.post("/logout", null, {
-      headers: getAuthHeaders(),
+    const response = await useAxios.post("user/login", data, {
+      headers: {
+        "X-Client-Type": "web",
+      },
     });
-
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Terjadi kesalahan." };
+    toast.error(error?.response?.data?.message || "Login gagal");
+    throw error.response?.data || error;
   }
 };
 
-export { login, logout };
+export { SignUp, SignIn };

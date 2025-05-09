@@ -1,4 +1,4 @@
-import useAxios from "./index";
+import useAxios from "./baseApi";
 
 const fetchDonasiBarangByOrganisasi = async (id_organisasi) => {
   try {
@@ -63,8 +63,32 @@ const updateCreatedAtDonasiBarang = async (id, created_at) => {
   }
 };
 
+const donasikanBarang = async (data) => {
+  try {
+    // Jika token diperlukan, bisa diaktifkan kembali:
+    // const token = sessionStorage.getItem("token");
+    // if (!token) {
+    //   console.error("No token found");
+    //   return;
+    // }
+
+    const response = await useAxios.post("/donasikan-barang", data, {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export {
   fetchDonasiBarangByOrganisasi,
   createDonasiBarang,
   updateCreatedAtDonasiBarang,
+  donasikanBarang,
 };

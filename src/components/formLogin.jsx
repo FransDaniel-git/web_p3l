@@ -1,62 +1,90 @@
+import React from 'react';
+import { Form, Button, Spinner } from 'react-bootstrap';
+import { Link ,useNavigate } from 'react-router-dom';
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Form, Button, FloatingLabel, Alert } from "react-bootstrap";
-import { toast } from "sonner";
-import { login } from "../api/apiAuth";
-
+import {toast} from 'react-toastify';
+import { SignIn } from '../api/apiAuth';
 const FormLogin = () => {
+
   const navigate = useNavigate();
-  const [user, setUser] = useState({ email: "", password: "" });
+  console.log("Navigate function:", navigate);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (user.email === "" || user.password === "") {
-      toast.error("Tidak boleh ada yang kosong");
-      return;
-    } else {
-      login(user)
-        .then((response) => {
-          toast.success(response.message);
-          localStorage.setItem("token", response.token);
-          localStorage.setItem("user", JSON.stringify(response.user));
-          navigate("/showUser");
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
+  const handleChange = (e) =>{
+    const newData = {...data, [e.target.name]: e.target.value};
+    setData(newData);
+    if(newData.email !== "" && newData.password !== ""){
+      setIsDisabled(false);
+    }else{
+      setIsDisabled(true);
     }
+  }
+
+  const Login =  (event) => {
+    event.preventDefault();
+    console.log(data);
+    console.log("bruh");
+    setLoading(true);
+    SignIn(data)
+    .then((response) => {
+      console.log("bruh12");
+      setLoading(false);
+      sessionStorage.setItem("token", response.token);
+      sessionStorage.setItem("data", response.data);
+      sessionStorage.setItem("id" , response.id);
+      console.log("bruh122");
+      console.log(response);
+      toast.success("Login Success");
+      console.log(navigate)
+      navigate("/content");
+    })
+    .catch((error) => {
+      console.log("bruh34");
+      setLoading(false);
+      toast.error(error.message);
+    });
   };
-
   return (
-    <Form onSubmit={handleSubmit}>
-      <FloatingLabel controlId="email" label="Email address" className="mb-4">
-        <Form.Control
-          type="email"
-          name="email"
-          value={user.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-      </FloatingLabel>
+    <Form>
+          <Form.Group className="mb-3" controlId="formName">
+      <Form.Label>Email</Form.Label>
+      <Form.Control 
+        type="email" 
+        placeholder="Masukkan Email" 
+        name="email"
+        value={data.name}
+        onChange={handleChange} 
+      />
+    </Form.Group>
 
-      <FloatingLabel controlId="password" label="Password" className="mb-4">
-        <Form.Control
-          type="password"
-          name="password"
-          value={user.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
-      </FloatingLabel>
+    <Form.Group className="mb-3" controlId="formPassword">
+      <Form.Label>Password</Form.Label>
+      <Form.Control 
+        type="password" 
+        placeholder="Masukkan password" 
+        name="password"
+        value={data.password}
+        onChange={handleChange} 
+      />
+    </Form.Group>
 
-      <Button variant="primary" type="submit" size="lg" className="w-25">
-        Login
+
+      <Button variant="primary" type="submit" disabled={isDisabled} onClick={Login}>
+        {loading ? (
+          <Spinner animation='border' variant='light' size='sm'/>
+        ) : (
+          <span>Login</span>
+        )}
       </Button>
+      <p className='text-end mt-2'>
+        Belum punya akun? <Link to='/register'>Daftar</Link>
+      </p>
     </Form>
   );
 };

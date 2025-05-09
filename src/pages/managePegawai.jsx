@@ -128,7 +128,7 @@ const ManagePegawai = () => {
             </div>
           </div>
 
-          <div style={{ maxHeight: "55vh", overflowY: "auto" }}>
+          <div style={{ maxHeight: "50vh", overflowY: "auto" }}>
             <Table striped bordered hover responsive>
               <thead>
                 <tr>

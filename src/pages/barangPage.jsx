@@ -13,6 +13,8 @@ import {
   Image,
   InputGroup,
   Badge,
+  Dropdown,
+  Modal,
 } from "react-bootstrap";
 import { fetchBarang } from "../api/barangApi";
 import { fetchKategoris } from "../api/kategoriApi";
@@ -21,10 +23,12 @@ import logo from "../assets/logo_reusemart_big.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaStar } from "react-icons/fa";
 import { FaShieldAlt } from "react-icons/fa";
+import { IoCartOutline } from "react-icons/io5";
 
 const BarangPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [search, setSearch] = useState("");
   const [hargaMin, setHargaMin] = useState("");
@@ -122,14 +126,26 @@ const BarangPage = () => {
       .finally(() => setLoading(false));
   };
 
-  const handleLogout = () => {
-    sessionStorage.clear();
-    setIsLoggedIn(false);
-  };
-
   const handleClickDetail = (barang) => {
     navigate(`/barang/${barang.kode_barang}`);
   };
+
+  const handleClickLogin = () => {
+    navigate("/login");
+  };
+
+  const handleClickRegister = () => {
+    navigate("/register");
+  };
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    setIsLoggedIn(false);
+    setShowLogoutModal(false);
+  };
+
+  const handleShowLogoutModal = () => setShowLogoutModal(true);
+  const handleCloseLogoutModal = () => setShowLogoutModal(false);
 
   return (
     <>
@@ -205,10 +221,13 @@ const BarangPage = () => {
         .barang-card .card-body {
             border-radius: 0 0 6px 6px;
         }
+        .dropdown-toggle::after {
+          border-top-color: white;
+        }
         `}
       </style>
 
-      <Navbar bg="primary" data-bs-theme="dark">
+      <Navbar bg="primary" data-bs-theme="light">
         <Container
           fluid
           className="d-flex flex-wrap align-items-center justify-content-between px-2 px-md-4 py-2"
@@ -230,7 +249,7 @@ const BarangPage = () => {
             className="d-flex mx-2 flex-grow-1"
             onSubmit={(e) => e.preventDefault()}
           >
-            <InputGroup size="lg" className="w-75 mx-auto">
+            <InputGroup size="md" className="w-75 mx-auto">
               <Form.Control
                 type="text"
                 placeholder="Cari barang..."
@@ -251,53 +270,81 @@ const BarangPage = () => {
             {!isLoggedIn ? (
               <>
                 <Button
-                  size="lg"
+                  size="md"
                   variant="outline-light"
                   className="me-2"
-                  onClick={() => alert("Daftar")}
+                  onClick={handleClickRegister}
                 >
                   Daftar
                 </Button>
-                <Button
-                  size="lg"
-                  variant="light"
-                  onClick={() => alert("Masuk")}
-                >
+                <Button size="md" variant="light" onClick={handleClickLogin}>
                   Masuk
                 </Button>
               </>
             ) : (
               <>
                 <Button
-                  size="lg"
-                  variant="outline-success"
-                  className="me-3"
+                  size="md"
+                  variant="none"
+                  className="me-3 d-flex align-items-center rounded"
                   onClick={() => alert("Keranjang")}
                 >
-                  Keranjang
+                  <IoCartOutline size={30} className="text-white" />
                 </Button>
-                <Image
-                  src="https://via.placeholder.com/40"
-                  roundedCircle
-                  width={40}
-                  height={40}
-                  className="me-2"
-                  alt="Profil"
-                  style={{ border: "2px solid white" }}
-                />
-                <span className="me-2 text-white">{userName}</span>
-                <Button
-                  variant="outline-danger"
-                  size="lg"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
+
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as="div"
+                    className="d-flex align-items-center"
+                    style={{
+                      cursor: "pointer",
+                      background: "transparent",
+                      border: "none",
+                      outline: "none",
+                    }}
+                  >
+                    <Image
+                      src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                      roundedCircle
+                      width={40}
+                      height={40}
+                      className="me-2"
+                      alt="Profil"
+                      style={{ border: "2px solid white" }}
+                    />
+                    <span className="me-2 text-white">{userName}</span>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu align="end">
+                    <Dropdown.Item
+                      as="button"
+                      className="text-danger"
+                      onClick={handleShowLogoutModal}
+                    >
+                      Logout
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </>
             )}
           </Nav>
         </Container>
       </Navbar>
+
+      <Modal show={showLogoutModal} onHide={handleCloseLogoutModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Konfirmasi Logout</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Apakah Anda yakin ingin keluar dari akun?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseLogoutModal}>
+            Batal
+          </Button>
+          <Button variant="danger" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Container fluid className="py-4 px-2 px-md-5">
         <Row className="g-5">

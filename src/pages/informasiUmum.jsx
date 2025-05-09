@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   Button,
@@ -11,6 +11,7 @@ import gambar_1 from "../assets/IU_1.jpg";
 import gambar_2 from "../assets/IU_2.jpg";
 import gambar_3 from "../assets/IU_3.jpg";
 import gambar_4 from "../assets/IU_4.jpg";
+import { useNavigate } from "react-router-dom";
 
 const cards = [
   {
@@ -41,6 +42,28 @@ const cards = [
 
 export default function InformasiUmum() {
   const [currentCard, setCurrentCard] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const navigate = useNavigate();
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, []);
 
   const handlePrevious = () => {
     if (currentCard > 0) setCurrentCard(currentCard - 1);
@@ -50,49 +73,142 @@ export default function InformasiUmum() {
     if (currentCard < cards.length - 1) {
       setCurrentCard(currentCard + 1);
     } else {
-      alert("Selesai membaca informasi umum.");
+      navigate("/");
     }
   };
 
-  return (
-    <Container
-      fluid
-      className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-4"
-    >
-      <div
-        style={{
-          position: "absolute",
+  // Responsive background elements
+  const getBackgroundStyle = () => {
+    // Mobile view (<768px)
+    if (windowWidth < 768) {
+      return {
+        topLeft: {
+          width: "250px",
+          height: "300px",
+          left: "-100px",
+          top: "-100px",
+        },
+        topRight: {
+          width: "200px",
+          height: "250px",
+          left: "20px",
+          top: "20px",
+        },
+        bottomLeft: {
+          width: "250px",
+          height: "300px",
+          right: "-100px",
+          bottom: "-100px",
+        },
+        bottomRight: {
+          width: "200px",
+          height: "250px",
+          right: "20px",
+          bottom: "20px",
+        },
+      };
+    }
+    // Tablet view (768px - 992px)
+    else if (windowWidth < 992) {
+      return {
+        topLeft: {
+          width: "350px",
+          height: "400px",
+          left: "-120px",
+          top: "-120px",
+        },
+        topRight: {
+          width: "300px",
+          height: "350px",
+          left: "30px",
+          top: "30px",
+        },
+        bottomLeft: {
+          width: "350px",
+          height: "400px",
+          right: "-120px",
+          bottom: "-120px",
+        },
+        bottomRight: {
+          width: "300px",
+          height: "350px",
+          right: "30px",
+          bottom: "30px",
+        },
+      };
+    }
+    // Desktop view (>=992px)
+    else {
+      return {
+        topLeft: {
           width: "450px",
           height: "500px",
           left: "-150px",
           top: "-150px",
-          background: "#004BFE",
-          transform: "rotate(92deg)",
-          borderRadius: "50%",
-          zIndex: 1,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
+        },
+        topRight: {
           width: "400px",
           height: "450px",
           left: "50px",
           top: "50px",
-          background: "#D9E4FF",
-          transform: "rotate(-110deg)",
-          borderRadius: "50%",
-          zIndex: 0,
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
+        },
+        bottomLeft: {
           width: "450px",
           height: "500px",
           right: "-150px",
           bottom: "-150px",
+        },
+        bottomRight: {
+          width: "400px",
+          height: "450px",
+          right: "50px",
+          bottom: "50px",
+        },
+      };
+    }
+  };
+
+  const bgStyle = getBackgroundStyle();
+
+  // Get image height based on screen size
+  const getImageHeight = () => {
+    if (windowWidth < 576) return "15rem";
+    if (windowWidth < 768) return "18rem";
+    if (windowWidth < 992) return "20rem";
+    return "25rem";
+  };
+
+  // Get button size based on screen size
+  const getButtonSize = () => {
+    if (windowWidth < 576) return "sm";
+    if (windowWidth < 992) return "md";
+    return "lg";
+  };
+
+  // Get container width based on screen size
+  const getContainerWidth = () => {
+    if (windowWidth < 576) return "95%";
+    if (windowWidth < 992) return "85%";
+    return "75%";
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      {/* Background decorative elements */}
+      <div
+        style={{
+          position: "absolute",
+          width: bgStyle.topLeft.width,
+          height: bgStyle.topLeft.height,
+          left: bgStyle.topLeft.left,
+          top: bgStyle.topLeft.top,
           background: "#004BFE",
           transform: "rotate(92deg)",
           borderRadius: "50%",
@@ -102,10 +218,36 @@ export default function InformasiUmum() {
       <div
         style={{
           position: "absolute",
-          width: "400px",
-          height: "450px",
-          right: "50px",
-          bottom: "50px",
+          width: bgStyle.topRight.width,
+          height: bgStyle.topRight.height,
+          left: bgStyle.topRight.left,
+          top: bgStyle.topRight.top,
+          background: "#D9E4FF",
+          transform: "rotate(-110deg)",
+          borderRadius: "50%",
+          zIndex: 0,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: bgStyle.bottomLeft.width,
+          height: bgStyle.bottomLeft.height,
+          right: bgStyle.bottomLeft.right,
+          bottom: bgStyle.bottomLeft.bottom,
+          background: "#004BFE",
+          transform: "rotate(92deg)",
+          borderRadius: "50%",
+          zIndex: 1,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: bgStyle.bottomRight.width,
+          height: bgStyle.bottomRight.height,
+          right: bgStyle.bottomRight.right,
+          bottom: bgStyle.bottomRight.bottom,
           background: "#D9E4FF",
           transform: "rotate(-110deg)",
           borderRadius: "50%",
@@ -113,100 +255,123 @@ export default function InformasiUmum() {
         }}
       />
 
-      <Row className="justify-content-center w-75">
-        <Col xl={8} lg={10} md={12}>
-          <Card
-            className="border-0"
-            style={{
-              borderRadius: "20px",
-              boxShadow: "0 10px 30px rgba(59, 113, 202, 0.2)",
-              overflow: "hidden",
-            }}
-          >
-            <Card.Img
-              variant="top"
-              src={cards[currentCard].image}
+      <Container
+        fluid
+        className="d-flex align-items-center justify-content-center min-vh-100 py-4"
+        style={{ position: "relative", zIndex: 2 }}
+      >
+        <Row
+          className="justify-content-center align-items-center"
+          style={{ width: getContainerWidth() }}
+        >
+          <Col xs={12} sm={12} md={12} lg={10} xl={8}>
+            <Card
               style={{
-                height: "30rem",
-                objectFit: "cover",
-                objectPosition: "center",
+                borderRadius: "20px",
+                overflow: "hidden",
               }}
-            />
-
-            <Card.Body
-              className="p-5 d-flex flex-column"
-              style={{ backgroundColor: "#ffffff" }}
+              className="border-0 shadow-lg"
             >
-              <div className="text-center mb-4">
-                <h2
-                  className="text-dark fw-bold mb-4"
-                  style={{ fontSize: "2rem" }}
-                >
-                  {cards[currentCard].title}
-                </h2>
-                <p
-                  className="text-dark"
-                  style={{
-                    whiteSpace: "pre-line",
-                    fontSize: "1.1rem",
-                    lineHeight: "1.8",
-                  }}
-                >
-                  {cards[currentCard].content}
-                </p>
-              </div>
+              <Card.Img
+                variant="top"
+                src={cards[currentCard].image}
+                style={{
+                  height: getImageHeight(),
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
+              />
 
-              <div className="mb-4">
-                <ProgressBar
-                  now={((currentCard + 1) / cards.length) * 100}
-                  variant="primary"
-                  style={{ height: "8px" }}
-                  className="bg-secondary"
-                />
-                <div className="text-end text-dark small mt-2">
-                  Langkah {currentCard + 1} dari {cards.length}
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-between mt-4">
-                {currentCard > 0 ? (
-                  <Button
-                    onClick={handlePrevious}
-                    size="lg"
-                    className="px-4 py-2 fw-medium"
+              <Card.Body
+                className={`p-${
+                  windowWidth < 576 ? "3" : "4"
+                } d-flex flex-column`}
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="text-center mb-3">
+                  <h2
+                    className="text-dark fw-bold mb-2"
                     style={{
-                      borderRadius: "10px",
-                      borderWidth: "2px",
-                      minWidth: "120px",
+                      fontSize:
+                        windowWidth < 576
+                          ? "1.3rem"
+                          : windowWidth < 992
+                          ? "1.5rem"
+                          : "1.6rem",
                     }}
                   >
-                    Kembali
-                  </Button>
-                ) : (
-                  <div style={{ minWidth: "120px" }}></div>
-                )}
+                    {cards[currentCard].title}
+                  </h2>
+                  <p
+                    className="text-dark"
+                    style={{
+                      whiteSpace: "pre-line",
+                      fontSize: windowWidth < 576 ? "0.875rem" : "1rem",
+                      lineHeight: "1.6",
+                    }}
+                  >
+                    {cards[currentCard].content}
+                  </p>
+                </div>
 
-                <Button
-                  variant="primary"
-                  onClick={handleNext}
-                  size="lg"
-                  className="px-4 py-2 fw-medium"
-                  style={{
-                    borderRadius: "10px",
-                    minWidth: "120px",
-                    boxShadow:
-                      currentCard === cards.length - 1
-                        ? "0 4px 15px rgba(25, 135, 84, 0.3)"
-                        : "0 4px 15px rgba(59, 113, 202, 0.3)",
-                  }}
-                >
-                  {currentCard === cards.length - 1 ? "Selesai" : "Lanjut"}
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                <div className="mb-3">
+                  <ProgressBar
+                    now={((currentCard + 1) / cards.length) * 100}
+                    variant="primary"
+                    style={{ height: windowWidth < 576 ? "0.4rem" : "0.5rem" }}
+                    className="bg-info"
+                  />
+                  <div className="text-end text-dark small mt-2">
+                    Langkah {currentCard + 1} dari {cards.length}
+                  </div>
+                </div>
+
+                <div className="d-flex justify-content-between mt-3">
+                  {currentCard > 0 ? (
+                    <Button
+                      onClick={handlePrevious}
+                      size={getButtonSize()}
+                      className={`px-${windowWidth < 576 ? "3" : "4"} py-${
+                        windowWidth < 576 ? "1" : "2"
+                      } fw-medium`}
+                      style={{
+                        borderRadius: "10px",
+                        borderWidth: "2px",
+                        minWidth: windowWidth < 576 ? "90px" : "120px",
+                      }}
+                    >
+                      Kembali
+                    </Button>
+                  ) : (
+                    <div
+                      style={{ minWidth: windowWidth < 576 ? "90px" : "120px" }}
+                    ></div>
+                  )}
+
+                  <Button
+                    variant="primary"
+                    onClick={handleNext}
+                    size={getButtonSize()}
+                    className={`px-${windowWidth < 576 ? "3" : "4"} py-${
+                      windowWidth < 576 ? "1" : "2"
+                    } fw-medium`}
+                    style={{
+                      borderRadius: "10px",
+                      minWidth: windowWidth < 576 ? "90px" : "120px",
+                      boxShadow:
+                        currentCard === cards.length - 1
+                          ? "0 4px 15px rgba(25, 135, 84, 0.3)"
+                          : "0 4px 15px rgba(59, 113, 202, 0.3)",
+                    }}
+                  >
+                    {currentCard === cards.length - 1 ? "Selesai" : "Lanjut"}
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
